@@ -1,68 +1,27 @@
-#include <iostream>
-#include "huffman.hpp"
-using namespace std;
-std::ifstream::pos_type filesize(const char* filename);
+#include "Huffman.hpp"
 
-int main()
-{
-    string workingMode;
-    string inpath;
-    string outpath;
-    cout << "Enter the working mode:";
-    cin >> workingMode;
-    if (workingMode == "compress")
-    {
-        cout << "Enter file's path which you want to compress:";
-        cin >> inpath;
-        ifstream inFile(inpath);
-        if (!inFile)
-        {
-            cerr << "Input file does not exist." << endl;
-            return 1;
-        }
-        inFile.close();
-        cout << "Enter path where you want to store the compressed file:";
-        cin >> outpath;
-        clock_t tStart = clock();
-        huffman f(inpath, outpath);
-        f.compress();
-        const char* inchararr = inpath.c_str();
-        const char* outchararr = outpath.c_str();
-        cout << "Time taken: " << (1.0 * (clock() - tStart) / CLOCKS_PER_SEC) << "sec" << endl;
-        cout << "Input File Size : " << filesize(inchararr) << " bytes." << endl;
-        cout << "Compressed File Size : " << filesize(outchararr) << " bytes." << endl;
-        cout << "Compression Ratio : " << (1.0 * filesize(outchararr) / filesize(inchararr)) << endl;
+using namespace std;
+
+int main() {
+    HuffmanCoding huff;
+
+    cout << "Choose mode:\n1. Compress\n2. Decompress\n> ";
+    int choice;
+    cin >> choice;
+
+    if (choice == 1) {
+        string input = "input.txt";
+        string output = "compressed.huff";
+        huff.compress(input, output);
+        cout << "Compression done. File: " << output << endl;
+    } else if (choice == 2) {
+        string input = "compressed.huff";
+        string output = "output.txt";
+        huff.decompress(input, output);
+        cout << "Decompression done. File: " << output << endl;
+    } else {
+        cout << "Invalid choice.\n";
     }
-    else if (workingMode == "decompress")
-    {
-        cout << "Enter file's path which you want to decompress:";
-        cin >> inpath;
-        ifstream inFile(inpath);
-        if (!inFile)
-        {
-            cerr << "Input file does not exist." << endl;
-            return 1;
-        }
-        inFile.close();
-        cout << "Enter path where you want to store the decompressed file:";
-        cin >> outpath;
-        clock_t tStart = clock();
-        huffman f(inpath, outpath);
-        f.decompress();
-        const char* inchararr = inpath.c_str();
-        const char* outchararr = outpath.c_str();
-        cout << "Time taken: " << (1.0 * (clock() - tStart) / CLOCKS_PER_SEC) << "sec" << endl;
-        cout << "Input File (Compressed) Size : " << filesize(inchararr) << " bytes." << endl;
-        cout << "DeCompressed File Size : " << filesize(outchararr) << " bytes." << endl;
-    }
-    else
-    {
-        cout << "Invalid input!";
-    }
+
     return 0;
 }
-
-std::ifstream::pos_type filesize(const char* filename)
-{
-    std::ifstream in(filename, std::ifstream::ate | std::ifstream::binary);
-    return in.tellg();
